@@ -1,6 +1,15 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectAllProduct,
+  fetchAllProductsAsync,
+  fetchProductsByFiltersAsync,
+  fetchBrandsAsync,
+  fetchCategoriesAsync,
+} from "../productSlice";
 import {
   ChevronDownIcon,
   FunnelIcon,
@@ -8,90 +17,123 @@ import {
   PlusIcon,
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  StarIcon,
+} from "@heroicons/react/20/solid";
+import { ITEMS_PER_PAGE } from "../../../app/constants";
 
-// import { increment, incrementAsync, selectCount } from "./ProductListSlice";
-// import { selectCount } from "./ProductListSlice";
+//useEffect
 export default function ProductList() {
-  const sortOptions = [
-    { name: "Most Popular", href: "#", current: true },
-    { name: "Best Rating", href: "#", current: false },
-    { name: "Newest", href: "#", current: false },
-    { name: "Price: Low to High", href: "#", current: false },
-    { name: "Price: High to Low", href: "#", current: false },
-  ];
-  const filters = [
+  const asyncFetch = useSelector(selectAllProduct);
+  const dispatch = useDispatch();
+  // useEffect(() => {
+  //   dispatch(fetchCategoriesAsync());
+  //   dispatch(fetchBrandsAsync());
+  // }, []);
+
+  //filter={"category":"smartphone",
+  //        "brand":"Apple"      }
+  //sort={"_sort":"price",
+  //      "_order":"asc"}
+  //pagenation={"_page":1,
+  //      "_limit":10}
+  const [filter, setFilter] = useState({});
+  const [sort, setSort] = useState({});
+  const [pagenation, setPagenation] = useState({});
+  const [page, setPage] = useState(1);
+  const [brand, setBrand] = useState([]);
+  const [category, setCategory] = useState([]);
+
+  const brands = asyncFetch.brands;
+  const categories = asyncFetch.categories;
+  let filters = [
     {
-      id: "color",
-      name: "Color",
-      options: [
-        { value: "white", label: "White", checked: false },
-        { value: "beige", label: "Beige", checked: false },
-        { value: "blue", label: "Blue", checked: true },
-        { value: "brown", label: "Brown", checked: false },
-        { value: "green", label: "Green", checked: false },
-        { value: "purple", label: "Purple", checked: false },
-      ],
+      id: "brand",
+      name: "Brand",
+      options: brands,
     },
     {
       id: "category",
       name: "Category",
-      options: [
-        { value: "new-arrivals", label: "New Arrivals", checked: false },
-        { value: "sale", label: "Sale", checked: false },
-        { value: "travel", label: "Travel", checked: true },
-        { value: "organization", label: "Organization", checked: false },
-        { value: "accessories", label: "Accessories", checked: false },
-      ],
-    },
-    {
-      id: "size",
-      name: "Size",
-      options: [
-        { value: "2l", label: "2L", checked: false },
-        { value: "6l", label: "6L", checked: false },
-        { value: "12l", label: "12L", checked: false },
-        { value: "18l", label: "18L", checked: false },
-        { value: "20l", label: "20L", checked: false },
-        { value: "40l", label: "40L", checked: true },
-      ],
+      options: categories,
     },
   ];
+  const sortOptions = [
+    { name: "Best Rating", sort: "rating", order: "desc", current: false },
+    { name: "Price: Low to High", sort: "price", order: "asc", current: false },
+    {
+      name: "Price: High to Low",
+      sort: "price",
+      order: "desc",
+      current: false,
+    },
+  ];
+  const handleFilter = (event, option, section) => {
+    const newOption = { ...option, checked: !option.checked };
+
+    const newFilter = { ...filter };
+    let temp = [...brand];
+    let temp1 = [...category];
+
+    if (event.target.checked) {
+      if (section === "brand") {
+        temp.push(option.value);
+        newFilter[section] = temp;
+      } else {
+        temp1.push(option.value);
+        newFilter[section] = temp1;
+      }
+    } else {
+      if (section === "brand") {
+        newFilter[section] = newFilter[section].filter(
+          (curr) => curr !== event.target.value
+        );
+      } else {
+        newFilter[section] = newFilter[section].filter(
+          (curr) => curr !== event.target.value
+        );
+      }
+    }
+    setBrand(temp);
+    setCategory(temp1);
+    setFilter(newFilter);
+  };
+
+  const handleSort = (option) => {
+    // console.log(option);
+    const newSort = { _sort: option.sort, _order: option.order };
+    setSort(newSort);
+  };
+  const handlePagenation = (page) => {
+    setPage(page);
+    const newPagenation = { _page: page, _limit: 10 };
+    setPagenation(newPagenation);
+  };
+
+  useEffect(() => {
+    // handlePagenation(page);
+    dispatch(fetchProductsByFiltersAsync({ filter, sort, pagenation }));
+  }, [filter, sort, pagenation]);
+  useEffect(() => {
+    handlePagenation(1);
+    dispatch(fetchAllProductsAsync());
+  }, [sort, filter]);
+  useEffect(() => {
+    handlePagenation(1);
+    dispatch(fetchAllProductsAsync());
+    dispatch(fetchBrandsAsync());
+    dispatch(fetchCategoriesAsync());
+  }, []);
+
+  const products = asyncFetch.products;
+  const totalItems = asyncFetch.totalItems;
+  // console.log(products);
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
-  const products = [
-    {
-      id: 1,
-      name: "Basic Tee",
-      href: "#",
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-      imageAlt: "Front of men's Basic Tee in black.",
-      price: "$35",
-      color: "Black",
-    },
-    {
-      id: 2,
-      name: "Basic Tee",
-      href: "#",
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-      imageAlt: "Front of men's Basic Tee in black.",
-      price: "$35",
-      color: "Black",
-    },
-    {
-      id: 3,
-      name: "Basic Tee",
-      href: "#",
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-      imageAlt: "Front of men's Basic Tee in black.",
-      price: "$35",
-      color: "Black",
-    }
-  ];
+  // console.log(brands);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   return (
     <>
@@ -181,13 +223,17 @@ export default function ProductList() {
                                       className="flex items-center"
                                     >
                                       <input
-                                        id={`filter-mobile-${section.id}-${optionIdx}`}
+                                        id={`filter-${section.id}-${optionIdx}`}
                                         name={`${section.id}[]`}
                                         defaultValue={option.value}
                                         type="checkbox"
-                                        defaultChecked={option.checked}
+                                        defaultChecked={option.checked} // Use 'checked' instead of 'defaultChecked'
                                         className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                        onChange={(e) =>
+                                          handleFilter(e, option, section.id)
+                                        }
                                       />
+
                                       <label
                                         htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
                                         className="ml-3 min-w-0 flex-1 text-gray-500"
@@ -241,8 +287,8 @@ export default function ProductList() {
                         {sortOptions.map((option) => (
                           <Menu.Item key={option.name}>
                             {({ active }) => (
-                              <a
-                                href={option.href}
+                              <Link
+                                to={option.to}
                                 className={classNames(
                                   option.current
                                     ? "font-medium text-gray-900"
@@ -250,9 +296,10 @@ export default function ProductList() {
                                   active ? "bg-gray-100" : "",
                                   "block px-4 py-2 text-sm"
                                 )}
+                                onClick={() => handleSort(option)}
                               >
                                 {option.name}
-                              </a>
+                              </Link>
                             )}
                           </Menu.Item>
                         ))}
@@ -329,8 +376,11 @@ export default function ProductList() {
                                     name={`${section.id}[]`}
                                     defaultValue={option.value}
                                     type="checkbox"
-                                    defaultChecked={option.checked}
+                                    defaultchecked={option.checked}
                                     className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                    onChange={(e) =>
+                                      handleFilter(e, option, section.id)
+                                    }
                                   />
                                   <label
                                     htmlFor={`filter-${section.id}-${optionIdx}`}
@@ -349,38 +399,55 @@ export default function ProductList() {
                 </form>
 
                 {/* Product grid */}
-                <div className="lg:col-span-3">
+                <div className="lg:col-span-3 ">
                   {
                     <div className="bg-white">
                       <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6  lg:max-w-7xl lg:px-8">
                         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
                           {products.map((product) => (
-                            <div key={product.id} className="group relative">
-                              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
+                            <div
+                              key={product.id}
+                              className="p-1 flex flex-col justify-between	group relative border border-grey-600"
+                            >
+                              <div className="group-hover:opacity-75 h-60 w-full">
                                 <img
-                                  src={product.imageSrc}
-                                  alt={product.imageAlt}
-                                  className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                                  src={product.thumbnail}
+                                  alt={product.images[1]}
+                                  className="h-full w-full object-cover object-center "
                                 />
                               </div>
                               <div className="mt-4 flex justify-between">
                                 <div>
                                   <h3 className="text-sm text-gray-700">
-                                    <a href={product.href}>
+                                    <Link to={`/product-detail/${product.id}`}>
                                       <span
                                         aria-hidden="true"
                                         className="absolute inset-0"
                                       />
-                                      {product.name}
-                                    </a>
+                                      {product.title}
+                                    </Link>
                                   </h3>
-                                  <p className="mt-1 text-sm text-gray-500">
-                                    {product.color}
+                                  <div className="flex gap-1">
+                                    <StarIcon className="w-6 h-6 text-yellow-500" />
+                                    <p className="mt-1 text-sm text-gray-500">
+                                      {product.rating}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="">
+                                  <p className="text-sm  font-medium text-gray-900">
+                                    $
+                                    {Math.round(
+                                      product.price -
+                                        (product.discountPercentage *
+                                          product.price) /
+                                          100
+                                    )}
+                                  </p>
+                                  <p className="text-right text-sm line-through font-medium text-gray-900">
+                                    {product.price}
                                   </p>
                                 </div>
-                                <p className="text-sm font-medium text-gray-900">
-                                  {product.price}
-                                </p>
                               </div>
                             </div>
                           ))}
@@ -393,25 +460,33 @@ export default function ProductList() {
             </section>
             <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
               <div className="flex flex-1 justify-between sm:hidden">
-                <a
-                  href="#"
+                <Link
+                  to="#"
+                  onClick={(e) => handlePagenation(page > 1 ? page - 1 : page)}
                   className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                 >
                   Previous
-                </a>
-                <a
-                  href="#"
+                </Link>
+                <Link
+                  to="#"
+                  onClick={(e) => handlePagenation(page <= 9 ? page + 1 : page)}
                   className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                 >
                   Next
-                </a>
+                </Link>
               </div>
               <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                 <div>
                   <p className="text-sm text-gray-700">
-                    Showing <span className="font-medium">1</span> to{" "}
-                    <span className="font-medium">3</span> of{" "}
-                    <span className="font-medium">{products.length}</span> results
+                    Showing{" "}
+                    <span className="font-medium">
+                      {(page - 1) * ITEMS_PER_PAGE + 1}
+                    </span>{" "}
+                    to{" "}
+                    <span className="font-medium">
+                      {Math.min(ITEMS_PER_PAGE * page, totalItems)}
+                    </span>{" "}
+                    of <span className="font-medium">{totalItems}</span> results
                   </p>
                 </div>
                 <div>
@@ -419,39 +494,45 @@ export default function ProductList() {
                     className="isolate inline-flex -space-x-px rounded-md shadow-sm"
                     aria-label="Pagination"
                   >
-                    <a
-                      href="#"
+                    <Link
+                      to="#"
+                      onClick={(e) =>
+                        handlePagenation(page > 1 ? page - 1 : page)
+                      }
                       className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
                     >
                       <span className="sr-only">Previous</span>
                       <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
-                    </a>
+                    </Link>
                     {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
-                    <a
-                      href="#"
-                      aria-current="page"
-                      className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    >
-                      1
-                    </a>
-                    <a
-                      href="#"
-                      className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                    >
-                      2
-                    </a>
-                    <a
-                      href="#"
-                      className="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex"
-                    >
-                      3
-                    </a>
+
+                    {Array.from(
+                      { length: Math.ceil(totalItems / 10) },
+                      (_, index) => (
+                        <Link
+                          onClick={(e) => handlePagenation(index + 1)}
+                          key={index}
+                          to="#"
+                          aria-current="page"
+                          className={`ring-gray-300 relative z-10 inline-flex items-center ${
+                            index + 1 === page
+                              ? "bg-indigo-600"
+                              : "border text-black"
+                          } px-4 py-2 text-sm font-semibold focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
+                        >
+                          {index + 1}
+                        </Link>
+                      )
+                    )}
                     <span className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0">
                       ...
                     </span>
-                    
-                    <a
-                      href="#"
+
+                    <Link
+                      to="#"
+                      onClick={(e) =>
+                        handlePagenation(page <= 9 ? page + 1 : page)
+                      }
                       className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
                     >
                       <span className="sr-only">Next</span>
@@ -459,7 +540,7 @@ export default function ProductList() {
                         className="h-5 w-5"
                         aria-hidden="true"
                       />
-                    </a>
+                    </Link>
                   </nav>
                 </div>
               </div>
