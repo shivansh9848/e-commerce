@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { StarIcon } from "@heroicons/react/20/solid";
 import { RadioGroup } from "@headlessui/react";
 import { fetchProductByIDAsync, selectProductById } from "../productSlice";
+import { selectItems } from "../../cart/cartSlice";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { addToCartAsync } from "../../cart/cartSlice";
@@ -41,6 +42,7 @@ export default function ProductDetail() {
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
   const product = useSelector(selectProductById);
+  const items = useSelector(selectItems);
   const user = useSelector(selectUser);
   useEffect(() => {
     dispatch(fetchProductByIDAsync(params.id));
@@ -50,7 +52,8 @@ export default function ProductDetail() {
     e.preventDefault();
     let demo = { ...product };
     delete demo.id;
-    dispatch(addToCartAsync({ ...product, quantity: 1, user: user.id }));
+    if (items.findIndex((curr) => curr.id == params.id) == -1)
+      dispatch(addToCartAsync({ ...demo, quantity: 1, user: user.id }));
     navigate("/cart");
   };
   return (
@@ -196,7 +199,6 @@ export default function ProductDetail() {
                   </div>
                 </RadioGroup>
               </div>
-
               {/* Sizes */}
               <div className="mt-10">
                 <div className="flex items-center justify-between">
@@ -277,13 +279,21 @@ export default function ProductDetail() {
                   </div>
                 </RadioGroup>
               </div>
-
-              <button
-                type="submit"
-                className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                Add to bag
-              </button>
+              {items.findIndex((curr) => curr.id == params.id) == -1 ? (
+                <button
+                  type="submit"
+                  className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  Add to Cart
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-green-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                >
+                  Go to Cart
+                </button>
+              )}
             </form>
           </div>
 

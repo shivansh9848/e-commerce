@@ -18,8 +18,8 @@ const initialState = {
 
 export const fetchAllProductsAsync = createAsyncThunk(
   "product/fetchAllProducts",
-  async () => {
-    const response = await fetchAllProducts();
+  async (pagenation) => {
+    const response = await fetchAllProducts(pagenation);
     // console.log(response.data)
     return response.data;
   }

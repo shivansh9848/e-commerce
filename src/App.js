@@ -10,15 +10,21 @@ import { Protected } from "./features/auth/components/Protected";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUser } from "./features/auth/authSlice";
 import { fetchItemsByUserIDAsync } from "./features/cart/cartSlice";
+import PageNotFound from "./pages/404";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
+import UserOrdersPage from "./pages/UserOrdersPage";
+import UserProfilePage from "./pages/UserProfilePage";
+import { fetchLoggedInUserAsync } from "./features/user/userSlice";
+import Logout from "./features/auth/components/Logout";
 function App() {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
   useEffect(() => {
     if (user) {
-      console.log("working");
       dispatch(fetchItemsByUserIDAsync(user.id));
+      dispatch(fetchLoggedInUserAsync(user.id));
     }
-  }, [user]);
+  }, [dispatch, user]);
 
   const router = createBrowserRouter([
     {
@@ -60,6 +66,46 @@ function App() {
           <ProductDetailPage />,
         </Protected>
       ),
+    },
+    {
+      path: "/logout",
+      element: <LoginPage />,
+    },
+    {
+      path: "/order-success/:id",
+      element: (
+        <Protected>
+          <OrderSuccessPage />,
+        </Protected>
+      ),
+    },
+    {
+      path: "/orders",
+      element: (
+        <Protected>
+          <UserOrdersPage />,
+        </Protected>
+      ),
+    },
+    {
+      path: "/profile",
+      element: (
+        <Protected>
+          <UserProfilePage />,
+        </Protected>
+      ),
+    },
+    {
+      path: "/logout",
+      element: (
+        <Protected>
+          <Logout />,
+        </Protected>
+      ),
+    },
+    {
+      path: "*",
+      element: <PageNotFound />,
     },
   ]);
 

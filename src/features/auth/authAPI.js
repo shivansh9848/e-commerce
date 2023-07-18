@@ -7,11 +7,21 @@ export function createUser(data) {
     resolve(response);
   });
 }
+export function updateUser(data) {
+  return new Promise(async (resolve) => {
+    const response = await axios.patch(
+      `http://localhost:8000/users/${data.id}`,
+      data
+    );
+    // console.log(response);
+    resolve(data);
+  });
+}
 export function loginUser(dat1) {
   return new Promise(async (resolve, reject) => {
     const email = dat1.email;
     const password = dat1.password;
-    console.log(email, password);
+    // console.log(email, password);
     const response = await axios.get(
       `http://localhost:8000/users?email=${dat1.email}`,
       dat1

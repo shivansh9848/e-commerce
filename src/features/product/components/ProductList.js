@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
   selectAllProduct,
-  fetchAllProductsAsync,
+  // fetchAllProductsAsync,
   fetchProductsByFiltersAsync,
   fetchBrandsAsync,
   fetchCategoriesAsync,
@@ -71,7 +71,7 @@ export default function ProductList() {
     },
   ];
   const handleFilter = (event, option, section) => {
-    const newOption = { ...option, checked: !option.checked };
+    // const newOption = { ...option, checked: !option.checked };
 
     const newFilter = { ...filter };
     let temp = [...brand];
@@ -115,17 +115,17 @@ export default function ProductList() {
   useEffect(() => {
     // handlePagenation(page);
     dispatch(fetchProductsByFiltersAsync({ filter, sort, pagenation }));
-  }, [filter, sort, pagenation]);
+  }, [dispatch, filter, sort, pagenation]);
   useEffect(() => {
     handlePagenation(1);
-    dispatch(fetchAllProductsAsync());
+    // dispatch(fetchAllProductsAsync(pagenation));
   }, [sort, filter]);
   useEffect(() => {
-    handlePagenation(1);
-    dispatch(fetchAllProductsAsync());
+    // handlePagenation(1);
+    // dispatch(fetchAllProductsAsync(pagenation));
     dispatch(fetchBrandsAsync());
     dispatch(fetchCategoriesAsync());
-  }, []);
+  }, [dispatch]);
 
   const products = asyncFetch.products;
   const totalItems = asyncFetch.totalItems;

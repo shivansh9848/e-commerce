@@ -1,6 +1,10 @@
 // A mock function to mimic making an async request for data
 import axios from "axios";
-export function fetchAllProducts() {
+export function fetchAllProducts(pagenation) {
+  let queryString = "";
+  for (let key in pagenation) {
+    queryString += `${key}=${pagenation[key]}&`;
+  }
   return new Promise(async (resolve) => {
     const data = await axios.get("http://localhost:8000/products");
     resolve(data);

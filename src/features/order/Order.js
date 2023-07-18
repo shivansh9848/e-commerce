@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { selectItems, deleteItemAsync, updateCartAsync } from "./cartSlice";
+import { selectItems, deleteItemAsync, updateCartAsync } from "./orderSlice";
 export default function Cart() {
   const products = useSelector(selectItems);
   const dispatch = useDispatch();

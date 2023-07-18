@@ -2,7 +2,8 @@ import { selectItems } from "../cart/cartSlice";
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { useSelector } from "react-redux";
-
+import { logoutAsync } from "../auth/authSlice";
+import { useDispatch } from "react-redux";
 import {
   Bars3Icon,
   ShoppingCartIcon,
@@ -23,16 +24,22 @@ const navigation = [
   { name: "Reports", href: "#", current: false },
 ];
 const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
+  { name: "Your Profile", href: "/profile" },
+  { name: "Your Orders", href: "/orders" },
+  { name: "Sign out", href: "/logout" },
 ];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 export default function Navbar({ children }) {
+  const dispatch = useDispatch();
   const items = useSelector(selectItems);
+  const handleClick = (item) => {
+    if (item.name === "Sign out") {
+      dispatch(logoutAsync());
+    }
+  };
   return (
     <>
       <div className="min-h-full">
@@ -85,7 +92,7 @@ export default function Navbar({ children }) {
                           />
                         </Link>
                       </button>
-                      {items ? (
+                      {items && items.length > 0 ? (
                         <span className="inline-flex mb-7 -ml-3 items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
                           {items.length}
                         </span>
@@ -118,15 +125,16 @@ export default function Navbar({ children }) {
                             {userNavigation.map((item) => (
                               <Menu.Item key={item.name}>
                                 {({ active }) => (
-                                  <a
-                                    href={item.href}
+                                  <Link
+                                    onClick={() => handleClick(item)}
+                                    to={item.href}
                                     className={classNames(
                                       active ? "bg-gray-100" : "",
                                       "block px-4 py-2 text-sm text-gray-700"
                                     )}
                                   >
                                     {item.name}
-                                  </a>
+                                  </Link>
                                 )}
                               </Menu.Item>
                             ))}
