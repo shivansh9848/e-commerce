@@ -3,18 +3,25 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUser, createUserAsync } from "../authSlice";
+import { Navigate, useNavigate } from "react-router-dom";
+
 export default function SignUp() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const user = useSelector(selectUser);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const onSubmit = (data) => {
     delete data.confirm_password;
     // console.log(data);
+    data.role = "user";
+    data.address = [];
     dispatch(createUserAsync(data));
+    navigate("/");
   };
   // console.log(errors);
   return (

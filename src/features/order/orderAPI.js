@@ -7,3 +7,10 @@ export function createOrder(order) {
     resolve(response);
   });
 }
+export function fetchAllOrders() {
+  return new Promise(async (resolve) => {
+    const response = await axios.get(`http://localhost:8000/orders`);
+    // console.log("vid", response);
+    resolve(response);
+  });
+}

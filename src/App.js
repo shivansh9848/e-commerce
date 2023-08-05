@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import Home from "./pages/Home";
+import AdminHome from "./pages/AdminHome";
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import Cart from "./features/cart/Cart";
@@ -16,6 +17,11 @@ import UserOrdersPage from "./pages/UserOrdersPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import { fetchLoggedInUserAsync } from "./features/user/userSlice";
 import Logout from "./features/auth/components/Logout";
+import ForgotPassword from "./features/auth/components/ForgotPassword";
+import { ProtectedAdmin } from "./features/auth/components/ProtectedAdmin";
+import AdminProductDetailPage from "./pages/AdminProductDetailPage";
+import AdminProductFormPage from "./pages/AdminProductFormPage";
+import AdminOrdersPage from "./pages/AdminOrdersPage";
 function App() {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
@@ -33,6 +39,14 @@ function App() {
         <Protected>
           <Home />,
         </Protected>
+      ),
+    },
+    {
+      path: "/admin",
+      element: (
+        <ProtectedAdmin>
+          <AdminHome />,
+        </ProtectedAdmin>
       ),
     },
     {
@@ -65,6 +79,38 @@ function App() {
         <Protected>
           <ProductDetailPage />,
         </Protected>
+      ),
+    },
+    {
+      path: "admin/product-detail/:id",
+      element: (
+        <ProtectedAdmin>
+          <AdminProductDetailPage />
+        </ProtectedAdmin>
+      ),
+    },
+    {
+      path: "admin/product-form",
+      element: (
+        <ProtectedAdmin>
+          <AdminProductFormPage />,
+        </ProtectedAdmin>
+      ),
+    },
+    {
+      path: "admin/orders",
+      element: (
+        <ProtectedAdmin>
+          <AdminOrdersPage />,
+        </ProtectedAdmin>
+      ),
+    },
+    {
+      path: "admin/product-form/edit/:id",
+      element: (
+        <ProtectedAdmin>
+          <AdminProductFormPage />,
+        </ProtectedAdmin>
       ),
     },
     {
@@ -102,6 +148,10 @@ function App() {
           <Logout />,
         </Protected>
       ),
+    },
+    {
+      path: "/forgot-password",
+      element: <ForgotPassword />,
     },
     {
       path: "*",

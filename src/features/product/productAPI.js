@@ -10,6 +10,21 @@ export function fetchAllProducts(pagenation) {
     resolve(data);
   });
 }
+export function createProduct(data) {
+  return new Promise(async (resolve) => {
+    const response = await axios.post("http://localhost:8000/products", data);
+    resolve(response);
+  });
+}
+export function updateProduct(data) {
+  return new Promise(async (resolve) => {
+    const response = await axios.patch(
+      `http://localhost:8000/products/${data.id}`,
+      data
+    );
+    resolve(response);
+  });
+}
 export function fetchProductByID(id) {
   return new Promise(async (resolve) => {
     const data = await axios.get(`http://localhost:8000/products/${id}`);

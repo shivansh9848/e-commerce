@@ -6,6 +6,7 @@ import { selectUser, loginUserAsync, errorMessage } from "../authSlice";
 import { Navigate } from "react-router-dom";
 export default function Login() {
   const dispatch = useDispatch();
+
   const user = useSelector(selectUser);
   const errMessage = useSelector(errorMessage);
   const {
@@ -22,8 +23,10 @@ export default function Login() {
   // console.log(errors);
   return (
     <>
-      {user ? (
+      {user && user.role == "user" ? (
         <Navigate to="/" replace={true} />
+      ) : user && user.role == "admin" ? (
+        <Navigate to="/admin" replace={true} />
       ) : (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -71,14 +74,6 @@ export default function Login() {
                   >
                     Password
                   </label>
-                  <div className="text-sm">
-                    <Link
-                      to="#"
-                      className="font-semibold text-indigo-600 hover:text-indigo-500"
-                    >
-                      Forgot password?
-                    </Link>
-                  </div>
                 </div>
                 <div className="mt-2">
                   <input
@@ -97,6 +92,14 @@ export default function Login() {
                 ) : (
                   ""
                 )}
+                <div className="text-right	pt-1 text-sm">
+                  <Link
+                    to="/forgot-password"
+                    className="font-semibold text-indigo-600 hover:text-indigo-500"
+                  >
+                    Forgot Password?
+                  </Link>
+                </div>
               </div>
 
               <div>

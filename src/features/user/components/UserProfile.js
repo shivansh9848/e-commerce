@@ -65,6 +65,9 @@ export default function UserProfile() {
             <h6 className="text-xl font-bold tracking-tight text-red-900">
               {user.email}
             </h6>
+            <h6 className="text-xl font-bold tracking-tight text-red-900">
+              {user.role}
+            </h6>
           </div>
           <div className=" items-baseline  py-4">
             <button
@@ -90,7 +93,8 @@ export default function UserProfile() {
           <p className="text-xl py-4 mt-0.5 font-medium text-gray-900">
             Saved Shipping Address
           </p>
-          {user.address.length > 0 &&
+          {user.address &&
+            user.address.length > 0 &&
             user.address.map((address, idx) => (
               <li key={idx} className="flex pb-4">
                 <div className=" border-t  border-gray-200 px-4 pt-6 sm:px-6">

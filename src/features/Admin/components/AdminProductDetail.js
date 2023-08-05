@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { StarIcon } from "@heroicons/react/20/solid";
 import { RadioGroup } from "@headlessui/react";
-import { fetchProductByIDAsync, selectProductById } from "../productSlice";
+import {
+  fetchProductByIDAsync,
+  selectProductById,
+} from "../../product/productSlice";
 import { selectItems } from "../../cart/cartSlice";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -35,7 +38,7 @@ const sizes = [
   { name: "2XL", inStock: true },
   { name: "3XL", inStock: true },
 ];
-export default function ProductDetail() {
+export default function AdminProductDetail() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const params = useParams();
@@ -56,7 +59,6 @@ export default function ProductDetail() {
       dispatch(addToCartAsync({ ...demo, quantity: 1, user: user.id }));
     navigate("/cart");
   };
-  console.log(items);
   return (
     <div className="bg-white">
       <div className="pt-6">
@@ -280,7 +282,7 @@ export default function ProductDetail() {
                   </div>
                 </RadioGroup>
               </div>
-              {items.findIndex((curr) => curr.id === params.id) === -1 ? (
+              {items.findIndex((curr) => curr.id == params.id) == -1 ? (
                 <button
                   type="submit"
                   className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"

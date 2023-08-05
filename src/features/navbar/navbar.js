@@ -2,7 +2,7 @@ import { selectItems } from "../cart/cartSlice";
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { useSelector } from "react-redux";
-import { logoutAsync } from "../auth/authSlice";
+import { logoutAsync, selectUser } from "../auth/authSlice";
 import { useDispatch } from "react-redux";
 import {
   Bars3Icon,
@@ -17,16 +17,15 @@ const user = {
     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 };
 const navigation = [
-  { name: "Dashboard", href: "#", current: true },
-  { name: "Team", href: "#", current: false },
-  { name: "Projects", href: "#", current: false },
-  { name: "Calendar", href: "#", current: false },
-  { name: "Reports", href: "#", current: false },
+  { name: "Dashboard", to: "#", user: true },
+  { name: "Team", to: "#", user: true },
+  { name: "Admin", to: "/admin", user: false },
+  { name: "Orders", to: "/admin/orders", user: false },
 ];
 const userNavigation = [
-  { name: "Your Profile", href: "/profile" },
-  { name: "Your Orders", href: "/orders" },
-  { name: "Sign out", href: "/logout" },
+  { name: "Your Profile", to: "/profile" },
+  { name: "Your Orders", to: "/orders" },
+  { name: "Sign out", to: "/logout" },
 ];
 
 function classNames(...classes) {
@@ -35,6 +34,7 @@ function classNames(...classes) {
 export default function Navbar({ children }) {
   const dispatch = useDispatch();
   const items = useSelector(selectItems);
+  const user1 = useSelector(selectUser);
   const handleClick = (item) => {
     if (item.name === "Sign out") {
       dispatch(logoutAsync());
@@ -50,7 +50,7 @@ export default function Navbar({ children }) {
                 <div className="flex h-16 items-center justify-between">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
-                      <Link to="/">
+                      <Link to="/admin">
                         <img
                           className="h-8 w-8"
                           src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
@@ -60,21 +60,23 @@ export default function Navbar({ children }) {
                     </div>
                     <div className="hidden md:block">
                       <div className="ml-10 flex items-baseline space-x-4">
-                        {navigation.map((item) => (
-                          <a
-                            key={item.name}
-                            href={item.href}
-                            className={classNames(
-                              item.current
-                                ? "bg-gray-900 text-white"
-                                : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                              "rounded-md px-3 py-2 text-sm font-medium"
-                            )}
-                            aria-current={item.current ? "page" : undefined}
-                          >
-                            {item.name}
-                          </a>
-                        ))}
+                        {navigation.map((item) =>
+                          item.user || user1.role == "admin" ? (
+                            <Link
+                              key={item.name}
+                              to={item.to}
+                              className={classNames(
+                                item.current
+                                  ? "bg-gray-900 text-white"
+                                  : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                                "rounded-md px-3 py-2 text-sm font-medium"
+                              )}
+                              aria-current={item.current ? "page" : undefined}
+                            >
+                              {item.name}
+                            </Link>
+                          ) : null
+                        )}
                       </div>
                     </div>
                   </div>
@@ -99,7 +101,6 @@ export default function Navbar({ children }) {
                       ) : (
                         ""
                       )}
-
                       {/* Profile dropdown */}
                       <Menu as="div" className="relative ml-3">
                         <div>
@@ -127,7 +128,7 @@ export default function Navbar({ children }) {
                                 {({ active }) => (
                                   <Link
                                     onClick={() => handleClick(item)}
-                                    to={item.href}
+                                    to={item.to}
                                     className={classNames(
                                       active ? "bg-gray-100" : "",
                                       "block px-4 py-2 text-sm text-gray-700"
@@ -169,7 +170,7 @@ export default function Navbar({ children }) {
                     <Disclosure.Button
                       key={item.name}
                       as="a"
-                      href={item.href}
+                      to={item.to}
                       className={classNames(
                         item.current
                           ? "bg-gray-900 text-white"
@@ -224,7 +225,8 @@ export default function Navbar({ children }) {
                       <Disclosure.Button
                         key={item.name}
                         as="a"
-                        href={item.href}
+                        onClick={() => handleClick(item)}
+                        to={item.to}
                         className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                       >
                         {item.name}
