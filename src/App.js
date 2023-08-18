@@ -24,6 +24,135 @@ import AdminProductFormPage from "./pages/AdminProductFormPage";
 import AdminOrdersPage from "./pages/AdminOrdersPage";
 import { checkAuthAsync } from "./features/auth/authSlice";
 import { selectUserChecked } from "./features/auth/authSlice";
+// import { Provider } from "react-redux";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: (
+      <Protected>
+        <Home />,
+      </Protected>
+    ),
+  },
+  {
+    path: "/admin",
+    element: (
+      <ProtectedAdmin>
+        <AdminHome />,
+      </ProtectedAdmin>
+    ),
+  },
+  {
+    path: "cart",
+    element: (
+      <Protected>
+        <Cart />,
+      </Protected>
+    ),
+  },
+  {
+    path: "login",
+    element: <LoginPage />,
+  },
+  {
+    path: "signup",
+    element: <SignUpPage />,
+  },
+  {
+    path: "checkout",
+    element: (
+      <Protected>
+        <Checkout />,
+      </Protected>
+    ),
+  },
+  {
+    path: "product-detail/:id",
+    element: (
+      <Protected>
+        <ProductDetailPage />,
+      </Protected>
+    ),
+  },
+  {
+    path: "admin/product-detail/:id",
+    element: (
+      <ProtectedAdmin>
+        <AdminProductDetailPage />
+      </ProtectedAdmin>
+    ),
+  },
+  {
+    path: "admin/product-form",
+    element: (
+      <ProtectedAdmin>
+        <AdminProductFormPage />,
+      </ProtectedAdmin>
+    ),
+  },
+  {
+    path: "admin/orders",
+    element: (
+      <ProtectedAdmin>
+        <AdminOrdersPage />,
+      </ProtectedAdmin>
+    ),
+  },
+  {
+    path: "admin/product-form/edit/:id",
+    element: (
+      <ProtectedAdmin>
+        <AdminProductFormPage />,
+      </ProtectedAdmin>
+    ),
+  },
+  {
+    path: "/logout",
+    element: <LoginPage />,
+  },
+  {
+    path: "/order-success/:id",
+    element: (
+      <Protected>
+        <OrderSuccessPage />,
+      </Protected>
+    ),
+  },
+  {
+    path: "/orders",
+    element: (
+      <Protected>
+        <UserOrdersPage />,
+      </Protected>
+    ),
+  },
+  {
+    path: "/profile",
+    element: (
+      <Protected>
+        <UserProfilePage />,
+      </Protected>
+    ),
+  },
+  {
+    path: "/logout",
+    element: (
+      <Protected>
+        <Logout />,
+      </Protected>
+    ),
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+  },
+  {
+    path: "*",
+    element: <PageNotFound />,
+  },
+]);
+
 function App() {
   const user = useSelector(selectUser);
   const userChecked = useSelector(selectUserChecked);
@@ -38,134 +167,14 @@ function App() {
     }
   }, [dispatch, user]);
 
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: (
-        <Protected>
-          <Home />,
-        </Protected>
-      ),
-    },
-    {
-      path: "/admin",
-      element: (
-        <ProtectedAdmin>
-          <AdminHome />,
-        </ProtectedAdmin>
-      ),
-    },
-    {
-      path: "cart",
-      element: (
-        <Protected>
-          <Cart />,
-        </Protected>
-      ),
-    },
-    {
-      path: "login",
-      element: <LoginPage />,
-    },
-    {
-      path: "signup",
-      element: <SignUpPage />,
-    },
-    {
-      path: "checkout",
-      element: (
-        <Protected>
-          <Checkout />,
-        </Protected>
-      ),
-    },
-    {
-      path: "product-detail/:id",
-      element: (
-        <Protected>
-          <ProductDetailPage />,
-        </Protected>
-      ),
-    },
-    {
-      path: "admin/product-detail/:id",
-      element: (
-        <ProtectedAdmin>
-          <AdminProductDetailPage />
-        </ProtectedAdmin>
-      ),
-    },
-    {
-      path: "admin/product-form",
-      element: (
-        <ProtectedAdmin>
-          <AdminProductFormPage />,
-        </ProtectedAdmin>
-      ),
-    },
-    {
-      path: "admin/orders",
-      element: (
-        <ProtectedAdmin>
-          <AdminOrdersPage />,
-        </ProtectedAdmin>
-      ),
-    },
-    {
-      path: "admin/product-form/edit/:id",
-      element: (
-        <ProtectedAdmin>
-          <AdminProductFormPage />,
-        </ProtectedAdmin>
-      ),
-    },
-    {
-      path: "/logout",
-      element: <LoginPage />,
-    },
-    {
-      path: "/order-success/:id",
-      element: (
-        <Protected>
-          <OrderSuccessPage />,
-        </Protected>
-      ),
-    },
-    {
-      path: "/orders",
-      element: (
-        <Protected>
-          <UserOrdersPage />,
-        </Protected>
-      ),
-    },
-    {
-      path: "/profile",
-      element: (
-        <Protected>
-          <UserProfilePage />,
-        </Protected>
-      ),
-    },
-    {
-      path: "/logout",
-      element: (
-        <Protected>
-          <Logout />,
-        </Protected>
-      ),
-    },
-    {
-      path: "/forgot-password",
-      element: <ForgotPassword />,
-    },
-    {
-      path: "*",
-      element: <PageNotFound />,
-    },
-  ]);
-
-  return <>{<RouterProvider router={router} />}</>;
+  return (
+    <>
+      <div className="App">
+        {/* Link must be inside the Provider */}
+        {userChecked && <RouterProvider router={router} />}
+      </div>
+    </>
+  );
 }
 
 export default App;

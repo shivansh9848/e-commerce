@@ -28,8 +28,7 @@ export const checkAuthAsync = createAsyncThunk(
   "auth/checkAuth",
   async () => {
     const response = await checkAuth();
-    // console.log(response.data[0]);
-    return response.data.user;
+    return response.data;
   }
 );
 export const logoutAsync = createAsyncThunk("auth/", async () => {

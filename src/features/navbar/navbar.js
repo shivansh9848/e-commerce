@@ -34,6 +34,7 @@ export default function Navbar({ children }) {
   const dispatch = useDispatch();
   const items = useSelector(selectItems);
   const user1 = useSelector(selectUserInfo);
+  console.log("user1",user1)
   const handleClick = (item) => {
     if (item.name === "Sign out") {
       dispatch(logoutAsync());
@@ -60,7 +61,7 @@ export default function Navbar({ children }) {
                     <div className="hidden md:block">
                       <div className="ml-10 flex items-baseline space-x-4">
                         {navigation.map((item) =>
-                          item.user || user1.role == "admin" ? (
+                          user1&& (item.user || user1.role == "admin") ? (
                             <Link
                               key={item.name}
                               to={item.to}

@@ -64,7 +64,7 @@ export default function UserProfile() {
               {user.email}
             </h6>
             <h6 className="text-xl font-bold tracking-tight text-red-900">
-              {user.role}
+              {user&&user.role}
             </h6>
           </div>
           <div className=" items-baseline  py-4">
