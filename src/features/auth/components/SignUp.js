@@ -4,10 +4,12 @@ import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUser, createUserAsync } from "../authSlice";
 import { Navigate, useNavigate } from "react-router-dom";
+import { selectUserInfo } from "../../user/userSlice";
 
 export default function SignUp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const userInfo = useSelector(selectUserInfo);
   const user = useSelector(selectUser);
   const {
     register,
@@ -26,7 +28,7 @@ export default function SignUp() {
   // console.log(errors);
   return (
     <>
-      <div>{user && user.email}</div>
+      <div>{user && userInfo.email}</div>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img

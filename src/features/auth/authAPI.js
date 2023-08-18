@@ -2,37 +2,46 @@
 import axios from "axios";
 export function createUser(data) {
   return new Promise(async (resolve) => {
-    const response = await axios.post("http://localhost:8000/users", data);
+    const response = await axios.post(
+      "http://localhost:8000/auth/signup",
+      data
+    );
     // console.log(response);
     resolve(response);
+  });
+}
+export function loginUser(data) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:8000/auth/login`,
+        data
+      );
+      console.log(response);
+      resolve(response);
+    } catch (err) {
+      reject("Invalid credentials");
+    }
+    // console.log("res",response)
+  });
+}
+export function checkAuth() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.get("http://localhost:8000/auth/check");
+      console.log("check",response);
+      resolve(response);
+    } catch (err) {
+      reject("Invalid credentials");
+    }
   });
 }
 export function updateUser(data) {
   return new Promise(async (resolve) => {
     const response = await axios.patch(
-      `http://localhost:8000/users/${data.id}`,
+      `http://localhost:8000/auth/${data.id}`,
       data
     );
-    // console.log(response);
     resolve(data);
-  });
-}
-export function loginUser(dat1) {
-  return new Promise(async (resolve, reject) => {
-    const email = dat1.email;
-    const password = dat1.password;
-    // console.log(email, password);
-    const response = await axios.get(
-      `http://localhost:8000/users?email=${dat1.email}`,
-      dat1
-    );
-    // console.log("response", response);
-    if (
-      response.data.length &&
-      response.data[0].email == email &&
-      response.data[0].password == password
-    )
-      resolve(response);
-    else reject("Wrong credentials");
   });
 }

@@ -1,15 +1,5 @@
 // A mock function to mimic making an async request for data
 import axios from "axios";
-export function fetchAllProducts(pagenation) {
-  let queryString = "";
-  for (let key in pagenation) {
-    queryString += `${key}=${pagenation[key]}&`;
-  }
-  return new Promise(async (resolve) => {
-    const data = await axios.get("http://localhost:8000/products");
-    resolve(data);
-  });
-}
 export function createProduct(data) {
   return new Promise(async (resolve) => {
     const response = await axios.post("http://localhost:8000/products", data);
@@ -53,7 +43,7 @@ export function fetchProductsByFilters(filter, sort, pagenation) {
   //      "_limit":10}
   let queryString = "";
   for (let key in filter) {
-    if (Array.isArray(filter[key]) == 0) {
+    if (Array.isArray(filter[key]) === 0) {
       queryString += `${key}=${filter[key]}&`;
     } else {
       filter[key].map((curr) => {

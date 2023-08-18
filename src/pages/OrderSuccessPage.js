@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { resetOrder } from "../features/order/orderSlice";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
+
 // import { selectUser } from "../features/auth/authSlice";
 export default function OrderSuccessPage() {
   const navigate = useNavigate();

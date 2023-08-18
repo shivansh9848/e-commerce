@@ -4,10 +4,13 @@ import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUser, loginUserAsync, errorMessage } from "../authSlice";
 import { Navigate } from "react-router-dom";
+import { selectUserInfo } from "../../user/userSlice";
 export default function Login() {
   const dispatch = useDispatch();
 
   const user = useSelector(selectUser);
+  const UserInfo = useSelector(selectUserInfo);
+  console.log("userInfo", UserInfo);
   const errMessage = useSelector(errorMessage);
   const {
     register,
@@ -23,9 +26,9 @@ export default function Login() {
   // console.log(errors);
   return (
     <>
-      {user && user.role == "user" ? (
+      {user && UserInfo && UserInfo.role == "user" ? (
         <Navigate to="/" replace={true} />
-      ) : user && user.role == "admin" ? (
+      ) : user && UserInfo && UserInfo.role == "admin" ? (
         <Navigate to="/admin" replace={true} />
       ) : (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">

@@ -9,7 +9,6 @@ import { selectItems } from "../../cart/cartSlice";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { addToCartAsync } from "../../cart/cartSlice";
-import { selectUser } from "../../auth/authSlice";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -46,17 +45,15 @@ export default function AdminProductDetail() {
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
   const product = useSelector(selectProductById);
   const items = useSelector(selectItems);
-  const user = useSelector(selectUser);
   useEffect(() => {
     dispatch(fetchProductByIDAsync(params.id));
   }, [dispatch, params.id]);
-  // console.log(product);
   const handleSubmit = (e) => {
     e.preventDefault();
     let demo = { ...product };
     delete demo.id;
     if (items.findIndex((curr) => curr.id == params.id) == -1)
-      dispatch(addToCartAsync({ ...demo, quantity: 1, user: user.id }));
+      dispatch(addToCartAsync({ ...demo, quantity: 1}));
     navigate("/cart");
   };
   return (

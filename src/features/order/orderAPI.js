@@ -9,8 +9,29 @@ export function createOrder(order) {
 }
 export function fetchAllOrders() {
   return new Promise(async (resolve) => {
-    const response = await axios.get(`http://localhost:8000/orders`);
+    const response = await axios.get(`http://localhost:8000/orders/`);
     // console.log("vid", response);
+    resolve(response);
+  });
+}
+
+export function updateOrder(order) {
+  return new Promise(async (resolve) => {
+    // console.log("oro", order);
+    const response = await axios.patch(
+      `http://localhost:8000/orders/${order.id}`,
+      order
+    );
+    resolve(response);
+  });
+}
+
+export function fetchLoggedInUsersOrders(userID) {
+  return new Promise(async (resolve) => {
+    const response = await axios.get(
+      `http://localhost:8000/orders/own`
+    );
+    // console.log("userorder",response);
     resolve(response);
   });
 }

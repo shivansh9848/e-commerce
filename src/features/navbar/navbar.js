@@ -2,7 +2,8 @@ import { selectItems } from "../cart/cartSlice";
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { useSelector } from "react-redux";
-import { logoutAsync, selectUser } from "../auth/authSlice";
+import { logoutAsync} from "../auth/authSlice";
+import { selectUserInfo } from "../user/userSlice";
 import { useDispatch } from "react-redux";
 import {
   Bars3Icon,
@@ -17,8 +18,6 @@ const user = {
     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 };
 const navigation = [
-  { name: "Dashboard", to: "#", user: true },
-  { name: "Team", to: "#", user: true },
   { name: "Admin", to: "/admin", user: false },
   { name: "Orders", to: "/admin/orders", user: false },
 ];
@@ -34,7 +33,7 @@ function classNames(...classes) {
 export default function Navbar({ children }) {
   const dispatch = useDispatch();
   const items = useSelector(selectItems);
-  const user1 = useSelector(selectUser);
+  const user1 = useSelector(selectUserInfo);
   const handleClick = (item) => {
     if (item.name === "Sign out") {
       dispatch(logoutAsync());

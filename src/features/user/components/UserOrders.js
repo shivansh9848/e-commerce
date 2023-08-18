@@ -2,21 +2,20 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUser } from "../../auth/authSlice";
 import { useNavigate } from "react-router-dom";
-import { fetchLoggedInUsersOrdersAsync } from "../userSlice";
-import { selectUserOrders } from "../userSlice";
+import { fetchLoggedInUsersOrdersAsync } from "../../order/orderSlice";
+import { selectUserOrders } from "../../order/orderSlice";
 export default function UserOrders() {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
   const navigate = useNavigate();
   const userOrders = useSelector(selectUserOrders);
   useEffect(() => {
-    dispatch(fetchLoggedInUsersOrdersAsync(user.id));
+    dispatch(fetchLoggedInUsersOrdersAsync());
   }, [dispatch, user]);
-  // console.log(userOrders);
-
+  console.log("abc",userOrders);
   return (
     <>
-      {userOrders.length == 0 ? (
+      {userOrders.length === 0 ? (
         <section className=" py-4 bg-neutral-200">
           <div className="flex justify-center container content-center px-4 mx-auto">
             <div className="max-w-md mx-auto text-center">
@@ -40,7 +39,7 @@ export default function UserOrders() {
       ) : (
         userOrders.map((Order) => (
           <div
-            key={Order.id}
+            // key={Order.id}
             className="bg-white mt-5 mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8"
           >
             <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-6">
@@ -61,11 +60,11 @@ export default function UserOrders() {
               <div className="flow-root">
                 <ul className="-my-6 divide-y divide-gray-200">
                   {Order.items.length &&
-                    Order.items.map((product) => (
-                      <li key={product.id} className="flex py-6">
+                    Order.items.map((productItem) => (
+                      <li key={productItem.id} className="flex py-6">
                         <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                           <img
-                            src={product.images[0]}
+                            src={productItem.product.images[0]}
                             className="h-full w-full object-cover object-center"
                           />
                         </div>
@@ -73,8 +72,8 @@ export default function UserOrders() {
                         <div className="ml-4 flex flex-1 flex-col">
                           <div>
                             <div className="flex justify-between text-base font-medium text-gray-900">
-                              <h3>{product.title}</h3>
-                              <p className="ml-4">{product.price}</p>
+                              <h3>{productItem.product.title}</h3>
+                              <p className="ml-4">&#8377;{productItem.product.price}</p>
                             </div>
                             <p className="mt-1 text-sm text-gray-500">
                               {/* {product.color} */}
@@ -82,7 +81,7 @@ export default function UserOrders() {
                           </div>
                           <div className="flex flex-1 items-end justify-between text-sm">
                             <div className="text-gray-500">
-                              Qty :{product.quantity}
+                              Qty :{productItem.quantity}
                             </div>
 
                             <div className="flex"></div>
@@ -95,7 +94,7 @@ export default function UserOrders() {
               <div className="border-t my-4 border-gray-200 px-4 py-6 sm:px-6">
                 <div className="flex justify-between text-base font-medium text-gray-900">
                   <p>Subtotal</p>
-                  <p>{Order.amount}</p>
+                  <p>&#8377;{Order.amount}</p>
                 </div>
                 <p className="pt-4 mt-0.5 text-base font-medium text-gray-900">
                   Shipping Address

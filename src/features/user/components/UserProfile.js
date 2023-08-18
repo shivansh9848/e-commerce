@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 
@@ -11,7 +11,6 @@ export default function UserProfile() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
     reset,
     setValue,
   } = useForm();
@@ -19,7 +18,6 @@ export default function UserProfile() {
   const [index, setIndex] = useState(null);
   const [newAddressButton, setNewAddressButton] = useState(null);
   // const navigate = useNavigate();
-  // const userOrders = useSelector(selectUserOrders);
   const user = useSelector(selectUserInfo);
   const handleRemove = (e, idx) => {
     const newobj = { ...user, address: [...user.address] };
@@ -75,9 +73,9 @@ export default function UserProfile() {
                 reset();
                 setNewAddressButton(!newAddressButton);
               }}
-              class="inline-flex items-center justify-center w-10 h-10 mr-2 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800"
+              classname="inline-flex items-center justify-center w-10 h-10 mr-2 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800"
             >
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
                 <path
                   d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
                   clip-rule="evenodd"

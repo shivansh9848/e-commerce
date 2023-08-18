@@ -37,15 +37,15 @@ export const deleteItemAsync = createAsyncThunk(
     return response.data;
   }
 );
-export const resetCartAsync = createAsyncThunk("cart/resetCart", async (id) => {
-  const response = await resetCart(id);
-  return response.user;
+export const resetCartAsync = createAsyncThunk("cart/resetCart", async () => {
+  const response = await resetCart();
+  return response.data;
 });
 
 export const fetchItemsByUserIDAsync = createAsyncThunk(
   "cart/fetchItemsByUserID",
-  async (userID) => {
-    const response = await fetchItemsByUserID(userID);
+  async () => {
+    const response = await fetchItemsByUserID();
     // console.log("demo", response);
     return response.data;
   }
@@ -91,7 +91,7 @@ export const cartSlice = createSlice({
       .addCase(updateCartAsync.fulfilled, (state, action) => {
         state.status = "idle";
         const idx = state.items.findIndex(
-          (curr) => curr.id == action.payload.id
+          (curr) => curr.id == action.payload.cartItemId
         );
         state.items[idx].quantity = action.payload.quantity;
       })

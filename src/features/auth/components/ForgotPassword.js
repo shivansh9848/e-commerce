@@ -1,21 +1,16 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { updateUserAsync } from "../authSlice";
 
 function ForgotPassword() {
-  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
-    formState: { errors },
     reset,
   } = useForm();
   const onSubmit = (data) => {
     console.log(data);
     // let dat = { ...user, password: };
-    // dispatch(updateUserAsync(dat));
     reset();
   };
 

@@ -27,7 +27,7 @@ import {
   ChevronRightIcon,
   StarIcon,
 } from "@heroicons/react/20/solid";
-import { ITEMS_PER_PAGE } from "../../../app/constants";
+import { ITEMS_PER_PAGE, discountedPrice } from "../../../app/constants";
 
 //useEffect
 export default function AdminProductList() {
@@ -40,7 +40,7 @@ export default function AdminProductList() {
 
   const [filter, setFilter] = useState({});
   const [sort, setSort] = useState({});
-  const [pagenation, setPagenation] = useState({});
+  const [pagenation, setPagenation] = useState({ _page: 1, _limit: 10 });
   const [page, setPage] = useState(1);
   const [brand, setBrand] = useState([]);
   const [category, setCategory] = useState([]);
@@ -110,20 +110,19 @@ export default function AdminProductList() {
   };
 
   useEffect(() => {
-    // handlePagenation(page);
+    // This effect handles both initial fetch and fetch when sort or filter changes
     dispatch(fetchProductsByFiltersAsync({ filter, sort, pagenation }));
-  }, [dispatch, filter, sort, pagenation]);
-  useEffect(() => {
-    handlePagenation(1);
-    // dispatch(fetchAllProductsAsync(pagenation));
-  }, [sort, filter]);
-  useEffect(() => {
-    // handlePagenation(1);
-    // dispatch(fetchAllProductsAsync(pagenation));
+    
+    // Additionally, you can dispatch the fetchBrandsAsync and fetchCategoriesAsync actions here
     dispatch(fetchBrandsAsync());
     dispatch(fetchCategoriesAsync());
-  }, [dispatch]);
-
+  }, [filter, sort, pagenation]);
+  
+  useEffect(() => {
+    // This effect handles the fetch when only sort or filter changes
+    handlePagenation(1);
+  }, [sort, filter]);
+  
   // console.log(products);
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
@@ -408,9 +407,9 @@ export default function AdminProductList() {
                       <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6  lg:max-w-7xl lg:px-8">
                         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
                           {products.map((product) => (
-                            <div>
+                            <div  key={product.id}>
                               <div
-                                key={product.id}
+                               
                                 className="p-1 flex flex-col justify-between	group relative border border-grey-600"
                               >
                                 <div className="group-hover:opacity-75 h-60 w-full">
@@ -441,15 +440,7 @@ export default function AdminProductList() {
                                     </div>
                                   </div>
                                   <div className="">
-                                    <p className="text-sm  font-medium text-gray-900">
-                                      $
-                                      {Math.round(
-                                        product.price -
-                                          (product.discountPercentage *
-                                            product.price) /
-                                            100
-                                      )}
-                                    </p>
+                                    {discountedPrice(product)}
                                     <p className="text-right text-sm line-through font-medium text-gray-900">
                                       {product.price}
                                     </p>

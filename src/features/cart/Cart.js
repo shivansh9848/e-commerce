@@ -1,28 +1,35 @@
-import React, { useState, useEffect, useMemo } from "react";
+// import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+
 import { selectItems, deleteItemAsync, updateCartAsync } from "./cartSlice";
 export default function Cart() {
-  const products = useSelector(selectItems);
+  const cart = useSelector(selectItems);
+  console.log(cart)
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // console.log(products.length);
-  const amount = products.reduce(
-    (amount, curr) => amount + curr.quantity * curr.price,
+  // console.log(cart.length);
+  const amount = cart.reduce(
+    (amount, curr) => amount + curr.quantity * curr.product.price,
     0
   );
   const handleRemove = (id) => {
     dispatch(deleteItemAsync(id));
   };
-  const handleQuantity = (e, product) => {
-    dispatch(updateCartAsync({ quantity: e.target.value, id: product.id }));
+  const handleQuantity = (e, cartItemId) => {
+    dispatch(
+      updateCartAsync({
+        quantity: e.target.value,
+        cartItemId: cartItemId,
+      })
+    );
     // e.target.value = product.quantity;
-    // console.log(products);
+    // console.log(cart);
   };
 
   return (
     <>
-      {products.length == 0 ? (
+      {cart.length == 0 ? (
         <section className=" py-4 bg-neutral-200">
           <div className="flex justify-center container content-center px-4 mx-auto">
             <div className="max-w-md mx-auto text-center">
@@ -47,7 +54,7 @@ export default function Cart() {
         <div className="bg-white mt-5 mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
           <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-6">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-              All Products
+              All cart
             </h1>
 
             <div className="flex items-center"></div>
@@ -55,12 +62,12 @@ export default function Cart() {
           <div className=" mt-8">
             <div className="flow-root">
               <ul className="-my-6 divide-y divide-gray-200">
-                {products.length &&
-                  products.map((product) => (
-                    <li key={product.id} className="flex py-6">
+                {cart.length &&
+                  cart.map((cartItem,idx) => (
+                    <li key={cartItem.product.id} className="flex py-6">
                       <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                         <img
-                          src={product.images[0]}
+                          src={cartItem.product.images[0]}
                           className="h-full w-full object-cover object-center"
                         />
                       </div>
@@ -69,11 +76,13 @@ export default function Cart() {
                         <div>
                           <div className="flex justify-between text-base font-medium text-gray-900">
                             <h3>
-                              <Link to={`/product-detail/${product.id}`}>
-                                {product.title}
+                              <Link
+                                to={`/product-detail/${cartItem.product.id}`}
+                              >
+                                {cartItem.product.title}
                               </Link>
                             </h3>
-                            <p className="ml-4">{product.price}</p>
+                            <p className="ml-4">${cartItem.product.price}</p>
                           </div>
                           <p className="mt-1 text-sm text-gray-500">
                             {/* {product.color} */}
@@ -83,11 +92,13 @@ export default function Cart() {
                           <div className="text-gray-500">
                             Qty{" "}
                             <select
-                              onClick={(e) => handleQuantity(e, product)}
+                              onChange={(e) =>
+                                handleQuantity(e, cartItem.id)
+                              }
                               className="pl-1 py-0.5"
                               name="Qty"
                               id="Qty"
-                              defaultValue={product.quantity}
+                              defaultValue={cartItem.quantity}
                             >
                               <option value="1">1</option>
                               <option value="2">2</option>
@@ -99,7 +110,7 @@ export default function Cart() {
                           <div className="flex">
                             <button
                               type="button"
-                              onClick={(e) => handleRemove(product.id)}
+                              onClick={(e) => handleRemove(cartItem.id)}
                               className="font-medium text-indigo-600 hover:text-indigo-500"
                             >
                               Remove
@@ -114,7 +125,7 @@ export default function Cart() {
             <div className="border-t my-4 border-gray-200 px-4 py-6 sm:px-6">
               <div className="flex justify-between text-base font-medium text-gray-900">
                 <p>Subtotal</p>
-                <p>{amount}</p>
+                <p>&#8377;{amount}</p>
               </div>
               <p className="mt-0.5 text-sm text-gray-500">
                 Shipping and taxes calculated at checkout.

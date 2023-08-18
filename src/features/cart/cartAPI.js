@@ -1,10 +1,10 @@
 // A mock function to mimic making an async request for data
 import axios from "axios";
-export function fetchItemsByUserID(userID) {
+export function fetchItemsByUserID() {
   return new Promise(async (resolve, isRejected) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/cart?user=${userID}`
+        `http://localhost:8000/cart`
       );
       resolve(response);
     } catch (err) {
@@ -14,30 +14,19 @@ export function fetchItemsByUserID(userID) {
 }
 
 export function addToCart(data) {
-  return new Promise(async (resolve, isRejected) => {
-    try {
-      const response = await axios.post("http://localhost:8000/cart", data);
-      // console.log("cart", data);
-      resolve(response);
-    } catch (err) {
-      isRejected("something wrong");
-    }
+  return new Promise(async (resolve) => {
+    const response = await axios.post("http://localhost:8000/cart", data);
+    resolve(response);
   });
 }
 
 export function updateCart(obj) {
-  return new Promise(async (resolve, isRejected) => {
-    try {
-      const response = await axios.patch(
-        `http://localhost:8000/cart/${obj.id}`,
-        {
-          quantity: obj.quantity,
-        }
-      );
-      resolve(obj);
-    } catch (err) {
-      isRejected("something wrong");
-    }
+  return new Promise(async (resolve) => {
+    const response = await axios.patch(
+      `http://localhost:8000/cart/${obj.cartItemId}`,
+      obj
+    );
+    resolve(obj);
   });
 }
 
@@ -48,16 +37,16 @@ export function deleteItem(id) {
     resolve({ data: id });
   });
 }
-export function resetCart(user) {
+export function resetCart() {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await fetchItemsByUserID(user);
+      const response = await fetchItemsByUserID();
       console.log("1", response);
       const deletePromises = response.data.map((curr) => {
         deleteItem(curr.id);
       });
       await Promise.all(deletePromises);
-      resolve({ data: user });
+      resolve({ status: 'success' });
     } catch (err) {
       reject("something wrong");
     }

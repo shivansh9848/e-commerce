@@ -26,7 +26,7 @@ export default function Checkout() {
     reset,
   } = useForm();
   const amount = items.reduce(
-    (acc, curr) => acc + curr.price * curr.quantity,
+    (acc, curr) => acc + curr.product.price * curr.quantity,
     0
   );
   const onSubmit = (data) => {
@@ -51,11 +51,10 @@ export default function Checkout() {
       amount,
       paymentMethod,
       selectedAddress: add,
-      user: user.id,
       status: "pending",
     };
     dispatch(createOrderAsync(order));
-    dispatch(resetCartAsync(user.id));
+    dispatch(resetCartAsync());
 
     console.log("xyz", order);
   };
@@ -406,12 +405,12 @@ export default function Checkout() {
             <div className=" mt-8">
               <div className="flow-root">
                 <ul className="-my-6 divide-y divide-gray-200">
-                  {items.map((product) => (
-                    <li key={product.id} className="flex py-6">
+                  {items.map((item) => (
+                    <li key={item.product.id} className="flex py-6">
                       <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                         <img
-                          src={product.thumbnail}
-                          alt={product.images[0]}
+                          src={item.product.thumbnail}
+                          alt={item.product.images[0]}
                           className="h-full w-full object-cover object-center"
                         />
                       </div>
@@ -420,9 +419,9 @@ export default function Checkout() {
                         <div>
                           <div className="flex justify-between text-base font-medium text-gray-900">
                             <h3>
-                              <Link>{product.title}</Link>
+                              <Link>{item.product.title}</Link>
                             </h3>
-                            <p className="ml-4">{product.price}</p>
+                            <p className="ml-4">{item.product.price}</p>
                           </div>
                           <p className="mt-1 text-sm text-gray-500">
                             {/* {product.color} */}
@@ -430,7 +429,7 @@ export default function Checkout() {
                         </div>
                         <div className="flex flex-1 items-end justify-between text-sm">
                           <div className="text-gray-500">
-                            Qty {product.quantity}
+                            Qty {item.quantity}
                           </div>
 
                           <div className="flex"></div>
@@ -443,7 +442,7 @@ export default function Checkout() {
               <div className="border-t my-4 border-gray-200 px-4 py-6 sm:px-6">
                 <div className="flex justify-between text-base font-medium text-gray-900">
                   <p>Subtotal</p>
-                  <p>${amount}</p>
+                  <p>&#8377;{amount}</p>
                 </div>
                 <p className="mt-0.5 text-sm text-gray-500">
                   Shipping and taxes calculated at checkout.

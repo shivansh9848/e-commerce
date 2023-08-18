@@ -22,13 +22,19 @@ import { ProtectedAdmin } from "./features/auth/components/ProtectedAdmin";
 import AdminProductDetailPage from "./pages/AdminProductDetailPage";
 import AdminProductFormPage from "./pages/AdminProductFormPage";
 import AdminOrdersPage from "./pages/AdminOrdersPage";
+import { checkAuthAsync } from "./features/auth/authSlice";
+import { selectUserChecked } from "./features/auth/authSlice";
 function App() {
   const user = useSelector(selectUser);
+  const userChecked = useSelector(selectUserChecked);
   const dispatch = useDispatch();
   useEffect(() => {
+    dispatch(checkAuthAsync());
+  }, [dispatch]);
+  useEffect(() => {
     if (user) {
-      dispatch(fetchItemsByUserIDAsync(user.id));
-      dispatch(fetchLoggedInUserAsync(user.id));
+      dispatch(fetchItemsByUserIDAsync());
+      dispatch(fetchLoggedInUserAsync());
     }
   }, [dispatch, user]);
 
@@ -159,11 +165,7 @@ function App() {
     },
   ]);
 
-  return (
-    <>
-      <RouterProvider router={router} />
-    </>
-  );
+  return <>{<RouterProvider router={router} />}</>;
 }
 
 export default App;

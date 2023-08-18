@@ -27,8 +27,8 @@ export default function ProductForm() {
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log(data);
-    console.log(params.id);
+    // console.log(data);
+    // console.log(params.id);
     if (!params.id) dispatch(createProductAsync(data));
     else {
       data.id = params.id;
