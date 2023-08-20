@@ -53,7 +53,7 @@ export default function UserProfile() {
 
   return (
     <>
-      <div className="bg-white mt-5 mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
+      {user&&<div className="bg-white mt-5 mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
         <div className="flex justify-between">
           <div className=" items-baseline  border-b border-gray-200 py-4">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900">
@@ -596,7 +596,7 @@ export default function UserProfile() {
             ""
           )}
         </div>
-      </div>
+      </div>}
     </>
   );
 }

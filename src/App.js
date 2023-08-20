@@ -24,6 +24,7 @@ import AdminProductFormPage from "./pages/AdminProductFormPage";
 import AdminOrdersPage from "./pages/AdminOrdersPage";
 import { checkAuthAsync } from "./features/auth/authSlice";
 import { selectUserChecked } from "./features/auth/authSlice";
+import StripeCheckout from "./pages/StripeCheckout"
 // import { Provider } from "react-redux";
 const router = createBrowserRouter([
   {
@@ -115,6 +116,14 @@ const router = createBrowserRouter([
     element: (
       <Protected>
         <OrderSuccessPage />,
+      </Protected>
+    ),
+  },
+  {
+    path: '/stripe-checkout/',
+    element: (
+      <Protected>
+        <StripeCheckout></StripeCheckout>
       </Protected>
     ),
   },

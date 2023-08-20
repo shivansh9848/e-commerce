@@ -4,7 +4,7 @@ export function fetchItemsByUserID() {
   return new Promise(async (resolve, isRejected) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/cart`
+        `http://localhost:8000/api/cart`
       );
       resolve(response);
     } catch (err) {
@@ -15,7 +15,7 @@ export function fetchItemsByUserID() {
 
 export function addToCart(data) {
   return new Promise(async (resolve) => {
-    const response = await axios.post("http://localhost:8000/cart", data);
+    const response = await axios.post("http://localhost:8000/api/cart", data);
     resolve(response);
   });
 }
@@ -23,7 +23,7 @@ export function addToCart(data) {
 export function updateCart(obj) {
   return new Promise(async (resolve) => {
     const response = await axios.patch(
-      `http://localhost:8000/cart/${obj.cartItemId}`,
+      `http://localhost:8000/api/cart/${obj.cartItemId}`,
       obj
     );
     resolve(obj);
@@ -32,7 +32,7 @@ export function updateCart(obj) {
 
 export function deleteItem(id) {
   return new Promise(async (resolve) => {
-    const response = await axios.delete(`http://localhost:8000/cart/${id}`);
+    const response = await axios.delete(`http://localhost:8000/api/cart/${id}`);
     // console.log("xyz", response);
     resolve({ data: id });
   });

@@ -13,9 +13,9 @@ import {
 export default function Checkout() {
   const items = useSelector(selectItems);
   // const navigate = useNavigate();
-  const currentOrderID = useSelector(selectCurrentOrder);
+  const currentOrder = useSelector(selectCurrentOrder);
   const dispatch = useDispatch();
-  const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [paymentMethod, setPaymentMethod] = useState("card");
   const [selectedAddress, setSelectedAddress] = useState(null);
   // const [Addressalert, setAddressalert] = useState();
   const user = useSelector(selectUserInfo);
@@ -61,10 +61,20 @@ export default function Checkout() {
   // console.log(user.address);
   return (
     <>
-      {currentOrderID != null && (
-        <Navigate to={`/order-success/${currentOrderID.id}`} replace={true} />
+      {/* {currentOrder != null && (
+        <Navigate to={`/order-success/${currentOrder.id}`} replace={true} />
+      )} */}
+       {!items.length && <Navigate to="/" replace={true}></Navigate>}
+      {currentOrder && currentOrder.paymentMethod === 'cash' && (
+        <Navigate
+          to={`/order-success/${currentOrder.id}`}
+          replace={true}
+        ></Navigate>
       )}
-      <div
+      {currentOrder && currentOrder.paymentMethod === 'card' && (
+        <Navigate to={`/stripe-checkout/`} replace={true}></Navigate>
+      )}
+      {user&&<div
         className=" my-5 grid lg:grid-cols-5
      mx-auto max-w-7xl px-4 sm:px-6 gap-20"
       >
@@ -473,7 +483,7 @@ export default function Checkout() {
             </div>
           </div>
         </div>
-      </div>
+      </div>}
     </>
   );
 }
